@@ -1,0 +1,32 @@
+## Size    (size of Field of View (2))
+## FOVP    (distance from camera (1))
+## Light   (position (3), intensity (1))
+## Sphere  (radius (1), center (3), color (3), ambient (1), diffuse (1), speculing (1), shininess(1), refractive index(1))
+## Plane   (normal-point (3), color (3), ambient (1), diffuse (1), speculing (1), shininess(1))
+
+#Size         :  900,  800
+#FOVP         :  -500
+#Plane        :  0,  -170,   0,     000,  000,  000,    0.3,  1,  0.3, 50
+#Plane        :  550, 000,  -00,   028,  000,  028,    0.3,  1,  0.3, 50
+#Plane        :  000,  000, -1500,  000,  128,  128,    0.3,  1,  0.3, 50
+#Light        :  19000,  9700, 4000,  0.8
+#Light        :  -17900, 4700, 1000,  0.8
+#Sphere       :  300,  160,   130, -1960,  223, 0,    0,    0.3,  1,  0.3, 50, 0
+#Sphere       :  310,  -320,  140, -1300,   0,   223,  0,    0.3,  1,  0.3, 50, 0
+#Sphere       :  250,  450,  80, -980,   223, 223,  0,    0.3,  1,  0.3, 50, 0
+#Sphere       :  90,  -300, 180, -700,   223, 0,  0,    0.3,  1,  0.3, 50, 1.8
+
+
+Size   ::  x:900  y:800
+
+FOVP   ::  d:-500
+
+Plane  ::  n_x:0  n_y:-170  n_z:0  c_r:0  c_g:0  c_b:0  am:0.3  di:1  sp:0.3  sh:50
+
+Light  ::  x:19000   y:9700  z:4000  in:0.8
+Light  ::  x:-17900  y:4700  z:1000  in:0.8
+
+Sphere ::  r:300  x:160   y:130  z:-1960  c_r:223  c_g:0    c_b:0  am:0.3  di:1  sp:0.3  sh:50  ri:0
+Sphere ::  r:310  x:-320  y:140  z:-1300  c_r:0    c_g:223  c_b:0  am:0.3  di:1  sp:0.3  sh:50  ri:0
+Sphere ::  r:250  x:450   y:80   z:-980   c_r:223  c_g:223  c_b:0  am:0.3  di:1  sp:0.3  sh:50  ri:0
+Sphere ::  r:90   x:-300  y:180  z:-700   c_r:223  c_g:0    c_b:0  am:0.3  di:1  sp:0.3  sh:50  ri:1.8
