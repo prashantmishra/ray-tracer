@@ -7,7 +7,7 @@ import scala.util.control.Breaks._
 
 class MainFrame extends Frame {
 
-  val view: View = (new ViewParser).parseView("objects.txt")
+  val view: View = (new ViewParser).parseView("samples/sample2.txt")
   val colors = (new Tracer).colorMatrix(view, 16)
 
   title = "Scala Ray Tracer"
