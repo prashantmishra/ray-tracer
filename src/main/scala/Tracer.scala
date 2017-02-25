@@ -1,5 +1,7 @@
 import java.awt.Color
 
+import org.slf4j.LoggerFactory
+
 import scala.swing.Color
 import scala.util.control.Breaks._
 
@@ -7,6 +9,7 @@ class Tracer {
 
   val depthMax: Int = 5
   val onlyRefraction: Boolean = true
+  val logger = LoggerFactory.getLogger(classOf[Tracer])
 
   def colorMatrix(view: View, aa_samples: Int): Array[Array[Color]] = {
 
@@ -19,7 +22,7 @@ class Tracer {
 
     for (x <- 0 until view.size(0)) {
 
-      println("Rendered " + (x * 10000.toDouble / view.size(0)).toInt / 100.toDouble + "%")
+      logger.info("Rendered {} percent of the scene..", (x * 10000.toDouble / view.size(0)).toInt / 100.toDouble)
 
       for (y <- 0 until view.size(1)) {
         var color: Color = null

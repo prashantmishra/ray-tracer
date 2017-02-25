@@ -1,5 +1,7 @@
 import java.awt.Color
 
+import org.slf4j.LoggerFactory
+
 import swing.Swing._
 import swing.{Color, _}
 import event._
@@ -7,8 +9,9 @@ import scala.util.control.Breaks._
 
 class MainFrame extends Frame {
 
-  val view: View = (new ViewParser).parseView("samples/sample2.txt")
+  val view: View = (new ViewParser).parseView("samples/sample.txt")
   val colors = (new Tracer).colorMatrix(view, 16)
+  val logger = LoggerFactory.getLogger(classOf[MainFrame])
 
   title = "Scala Ray Tracer"
   contents = new Panel {
@@ -29,11 +32,13 @@ class MainFrame extends Frame {
       }
     }
   }
+
   centerOnScreen
   listenTo(this)
+
   reactions += {
     case WindowClosing(e) => {
-      println("Exiting...")
+      logger.info("Exiting...")
       System.exit(0)
     }
   }
