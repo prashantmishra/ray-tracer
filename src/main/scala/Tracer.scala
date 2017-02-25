@@ -19,6 +19,7 @@ class Tracer {
     val colors = Array.ofDim[Color](view.size(0), view.size(1))
 
     val r = scala.util.Random
+    val startTime = System.currentTimeMillis()
 
     for (x <- 0 until view.size(0)) {
 
@@ -34,6 +35,9 @@ class Tracer {
         colors(x)(y) = color
       }
     }
+
+    logger.info("Completed rendering scene in {} seconds.", (System.currentTimeMillis() - startTime) / 1000)
+
     return colors
   }
 
