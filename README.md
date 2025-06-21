@@ -1,28 +1,8 @@
-# ScalaRayTracer
+## sbt project compiled with Scala 3
 
-Hello there!
+### Usage
 
-This is a ray-tracer written in Scala. It is capable of generating a scene with spheres, square-tiled planes and multiple light sources. It also has reflections, refractions and anti-aliasing through supersampling.
+This is a normal sbt project. You can compile code with `sbt compile`, run it with `sbt run`, and `sbt console` will start a Scala 3 REPL.
 
-## Compiling and running
-
-- Go inside the project directory : cd ${PROJECT_DIR}
-- Sbt compile : ```sbt compile```
-- Sbt run : ```sbt run```
-
-This will display the scene corresponding to the file "samples/sample.txt"
-
-## Example runs
-
-Generated scene for "samples/sample1.txt":
-
-![img1](https://raw.githubusercontent.com/prashantmishra/ScalaRayTracer/master/samples/sample1.png)
-
-Generated scene for "samples/sample2.txt":
-
-![img2](https://raw.githubusercontent.com/prashantmishra/ScalaRayTracer/master/samples/sample2.png)
-
-## TO-DO
-
-- Calculate the pixels in parallel.
-- Use json to deserialize objects.
+For more information on the sbt-dotty plugin, see the
+[scala3-example-project](https://github.com/scala/scala3-example-project/blob/main/README.md).

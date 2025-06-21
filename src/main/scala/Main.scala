@@ -1,49 +1,34 @@
-import java.awt.Color
-
 import org.slf4j.LoggerFactory
+import scalafx.application.JFXApp3
+import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.Includes._ // <-- ADD THIS LINE
+import scalafx.scene.Scene
+import scalafx.scene.canvas.Canvas
+import scalafx.scene.paint.Color
 
-import swing.Swing._
-import swing.{Color, _}
-import event._
-import scala.util.control.Breaks._
+object DisplayScene extends JFXApp3 {
 
-class MainFrame extends Frame {
+  override def start(): Unit = {
+    val view = new ViewParser().parseView("samples/sample.txt")
+    val colors = new Tracer().colorMatrix(view, 16)
+    val logger = LoggerFactory.getLogger(getClass)
 
-  val view: View = (new ViewParser).parseView("samples/sample.txt")
-  val colors = (new Tracer).colorMatrix(view, 16)
-  val logger = LoggerFactory.getLogger(classOf[MainFrame])
+    stage = new PrimaryStage {
+      title = "Scala Ray Tracer"
+      scene = new Scene(view.size.head, view.size(1)) {
+        val canvas = new Canvas(view.size.head, view.size(1))
+        val g = canvas.graphicsContext2D
+        content = canvas
 
-  title = "Scala Ray Tracer"
-  contents = new Panel {
-
-    preferredSize = (view.size(0), view.size(1))
-    opaque = true
-
-    override def paint(g: Graphics2D) = {
-
-      background = new Color(0, 0, 0)
-      super.paintComponent(g)
-
-      for (x <- 0 until view.size(0)) {
-        for (y <- 0 until view.size(1)) {
-          g.setColor(colors(x)(y))
-          g.drawLine(x, y, x, y)
+        for (x <- 0 until view.size.head; y <- 0 until view.size(1)) {
+          g.pixelWriter.setColor(x, y, colors(x)(y))
         }
+      }
+      // This line will now work because of the new import
+      onCloseRequest = () => {
+        logger.info("Exiting...")
+        sys.exit(0)
       }
     }
   }
-
-  centerOnScreen
-  listenTo(this)
-
-  reactions += {
-    case WindowClosing(e) => {
-      logger.info("Exiting...")
-      System.exit(0)
-    }
-  }
-}
-
-object DisplayScene extends SimpleSwingApplication {
-  def top = new MainFrame
 }
