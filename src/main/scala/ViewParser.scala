@@ -1,68 +1,79 @@
-import scala.collection.mutable
 import scala.io.Source
-import scalafx.scene.paint.Color
+import scala.util.Try
 
-class ViewParser {
+object ViewParser {
+  def parseScene(filename: String): (HittableList, Camera, Color, Int, Int) = {
+    // Strip comments and whitespace so directives can be parsed reliably.
+    val lines = Source.fromFile(filename).getLines().map { line =>
+      val commentIndex = line.indexOf('#')
+      if (commentIndex != -1) line.substring(0, commentIndex) else line
+    }.map(_.trim.toLowerCase).filterNot(_.isEmpty).toList
 
-  def parseView(file: String): View = {
-    var distance: Integer = null
-    val size = mutable.ListBuffer.empty[Int]
-    val objects = mutable.ListBuffer.empty[Model]
-    val lights = mutable.ListBuffer.empty[Light]
-
-    for (line <- Source.fromFile(file).getLines()) {
-      if (line.nonEmpty && !line.startsWith("#")) {
-        val parts = line.split("::", 2)
-        if (parts.length == 2) {
-          val key = parts(0).trim
-          val value = parts(1).trim
-
-          if (key == "Size") {
-            val m = mapFromLine(value)
-            size += getInt(m, "x")
-            size += getInt(m, "y")
-          } else if (key == "FOVP") {
-            val m = mapFromLine(value)
-            distance = getInt(m, "d")
-          } else if (key == "Light") {
-            val m = mapFromLine(value)
-            lights += Light(
-              new Vector(getDouble(m, "x"), getDouble(m, "y"), getDouble(m, "z")),
-              getFloat(m, "in")
-            )
-          } else if (key == "Sphere") {
-            val m = mapFromLine(value)
-            val center = new Vector(getDouble(m, "x"), getDouble(m, "y"), getDouble(m, "z"))
-            val color = Color.rgb(getInt(m, "c_r"), getInt(m, "c_g"), getInt(m, "c_b"))
-            objects += Sphere(
-              getDouble(m, "r"), center, color,
-              getFloat(m, "am"), getFloat(m, "di"), getFloat(m, "sp"),
-              getInt(m, "sh"), getFloat(m, "ri")
-            )
-          } else if (key == "Plane") {
-            val m = mapFromLine(value)
-            val position = new Vector(getDouble(m, "n_x"), getDouble(m, "n_y"), getDouble(m, "n_z"))
-            val color = Color.rgb(getInt(m, "c_r"), getInt(m, "c_g"), getInt(m, "c_b"))
-            objects += Plane(
-              position, color,
-              getFloat(m, "am"), getFloat(m, "di"), getFloat(m, "sp"),
-              getInt(m, "sh")
-            )
-          }
-        }
-      }
+    // Helper to parse whitespace-delimited triples into vectors.
+    def parseVec(s: String): Vec3 = {
+        val parts = s.split("\\s+").map(_.toDouble)
+        Vec3(parts(0), parts(1), parts(2))
     }
-    new View(size.toList, distance, objects.toList, lights.toList)
-  }
+    
+    // Helper to parse whitespace-delimited triples into colors.
+    def parseColor(s: String): Color = {
+        val parts = s.split("\\s+").map(_.toDouble)
+        Color(parts(0), parts(1), parts(2))
+    }
 
-  def mapFromLine(line: String): Map[String, String] = {
-    line.trim.split(" ").filter(_.nonEmpty).map { s =>
-      val parts = s.split(":")
-      (parts(0), parts(1))
-    }.toMap
-  }
+    // Default scene parameters that can be overridden by the file.
+    var world: List[Hittable] = List.empty
+    var lookFrom = Vec3(13, 2, 3)
+    var lookAt = Vec3(0, 0, 0)
+    var vup = Vec3(0, 1, 0)
+    var vfov = 40.0
+    var aperture = 0.1
+    var focusDist = 10.0
+    var background = Color(0.7, 0.8, 1.0)
+    var maxDepth = 50
+    var samplesPerPixel = 100
 
-  def getDouble(m: Map[String, String], s: String): Double = m.get(s).get.toDouble
-  def getFloat(m: Map[String, String], s: String): Float = m.get(s).get.toFloat
-  def getInt(m: Map[String, String], s: String): Int = m.get(s).get.toInt
+    // Interpret each directive and mutate the parser state accordingly.
+    lines.foreach { line =>
+        val parts = line.split("\\s+", 2)
+        val key = parts(0)
+        val value = if (parts.length > 1) parts(1) else ""
+        
+        try {
+            key match {
+                case "background" => background = parseColor(value)
+                case "max_depth" => maxDepth = value.toInt
+                case "samples_per_pixel" => samplesPerPixel = value.toInt
+                case "camera_lookfrom" => lookFrom = parseVec(value)
+                case "camera_lookat" => lookAt = parseVec(value)
+                case "camera_vup" => vup = parseVec(value)
+                case "camera_vfov" => vfov = value.toDouble
+                case "camera_aperture" => aperture = value.toDouble
+                case "camera_focus_dist" => focusDist = value.toDouble
+                case "sphere" =>
+                    // Sphere directive layout: x y z radius material params...
+                    val sphereData = value.split("\\s+")
+                    val center = Vec3(sphereData(0).toDouble, sphereData(1).toDouble, sphereData(2).toDouble)
+                    val radius = sphereData(3).toDouble
+                    val materialType = sphereData(4)
+                    
+                    val materialParams = sphereData.drop(5)
+                    val material = materialType match {
+                        case "lambertian" => Lambertian(Color(materialParams(0).toDouble, materialParams(1).toDouble, materialParams(2).toDouble))
+                        case "metal" => Metal(Color(materialParams(0).toDouble, materialParams(1).toDouble, materialParams(2).toDouble), materialParams(3).toDouble)
+                        case "dielectric" => Dielectric(materialParams(0).toDouble)
+                    }
+                    world = Sphere(center, radius, material) :: world // Prepend to the list
+                case _ => println(s"Warning: Unknown directive: '$key'")
+            }
+        } catch {
+            case e: Exception => println(s"Warning: Could not parse line '$line'. Error: ${e.getClass.getSimpleName} - ${e.getMessage}")
+        }
+    }
+
+    // Build the camera and return the hittable list in file order.
+    val cam = Camera(lookFrom, lookAt, vup, vfov, 16.0 / 9.0, aperture, focusDist)
+    // The world list was built by prepending (::), so we reverse it to match the file order.
+    (HittableList(world.reverse), cam, background, maxDepth, samplesPerPixel)
+  }
 }

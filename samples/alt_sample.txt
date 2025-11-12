@@ -1,0 +1,30 @@
+# This is a comment. Lines starting with # are ignored.
+# All keywords are case-insensitive.
+
+# -- Scene Settings --
+background 0.70 0.80 1.00 # A light blue sky
+max_depth 50
+samples_per_pixel 500
+
+# -- Camera Settings --
+camera_lookfrom -2 2 1
+camera_lookat 0 0 -1
+camera_vup 0 1 0
+camera_vfov 90.0
+camera_aperture 0.0
+camera_focus_dist 3.4
+
+# -- World Objects --
+# Format: sphere <center_x> <center_y> <center_z> <radius> <material_type> [material_properties...]
+
+# Ground
+sphere 0 -100.5 -1 100   lambertian 0.8 0.8 0.0
+
+# Center sphere
+sphere 0 0 -1 0.5   lambertian 0.1 0.2 0.5
+
+# Left sphere (hollow glass)
+sphere -1 0 -1 0.5   dielectric 1.5
+
+# Right sphere (metal)
+sphere 1 0 -1 0.5   metal      0.8 0.6 0.2 0.1

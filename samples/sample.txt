@@ -1,0 +1,51 @@
+# A more complex scene with many random spheres to test the ray tracer.
+
+# -- Scene Settings --
+background 0.70 0.80 1.00
+max_depth 50
+samples_per_pixel 500
+
+# -- Camera Settings --
+# A wider view with depth of field (bokeh)
+camera_lookfrom 13 2 3
+camera_lookat 0 0 0
+camera_vup 0 1 0
+camera_vfov 20.0
+camera_aperture 0.1
+camera_focus_dist 10.0
+
+# -- World Objects --
+# Format: sphere <center_x> <center_y> <center_z> <radius> <material_type> [material_properties...]
+
+# Ground sphere
+sphere 0 -1000 0 1000 lambertian 0.5 0.5 0.5
+
+# --- Three large central spheres ---
+sphere 0 1 -0 1.0 dielectric 1.5
+sphere -4 1 -0 1.0 lambertian 0.4 0.2 0.1
+sphere 4 1 -0 1.0 metal 0.7 0.6 0.5 0.0
+
+# --- Many small random spheres ---
+sphere -2.5 0.2 -2.1 0.2 metal 0.8 0.8 0.8 0.1
+sphere -1.0 0.2 1.5 0.2 lambertian 0.2 0.8 0.2
+sphere 2.2 0.2 -1.2 0.2 dielectric 1.5
+sphere 0.8 0.2 0.5 0.2 lambertian 0.7 0.3 0.5
+sphere -3.5 0.2 0.8 0.2 metal 0.6 0.8 0.9 0.05
+sphere 3.1 0.2 1.9 0.2 lambertian 0.9 0.9 0.1
+sphere -0.5 0.2 -2.5 0.2 dielectric 1.5
+sphere 1.5 0.2 2.2 0.2 metal 0.2 0.3 0.8 0.7
+sphere 2.8 0.2 3.1 0.2 lambertian 0.8 0.1 0.1
+sphere -4.2 0.2 -1.5 0.2 dielectric 1.5
+sphere 0.1 0.2 -3.2 0.2 metal 0.9 0.1 0.2 0.2
+sphere -1.8 0.2 -3.8 0.2 lambertian 0.1 0.9 0.9
+sphere 3.8 0.2 -2.8 0.2 metal 0.4 0.4 0.4 0.0
+sphere -3.1 0.2 3.5 0.2 lambertian 0.5 0.5 0.8
+sphere 1.2 0.2 -4.1 0.2 dielectric 1.5
+sphere 4.5 0.2 2.5 0.2 metal 0.8 0.7 0.1 0.9
+sphere -0.8 0.2 4.2 0.2 lambertian 0.3 0.7 0.3
+sphere 2.5 0.2 4.8 0.2 dielectric 1.5
+sphere -4.8 0.2 -3.1 0.2 metal 0.6 0.6 0.7 0.15
+sphere -2.2 0.2 4.5 0.2 lambertian 0.9 0.5 0.2
+sphere 4.1 0.2 -4.5 0.2 dielectric 1.5
+sphere 0.5 0.2 3.8 0.2 metal 0.7 0.8 0.3 0.3
+sphere -3.8 0.2 -0.5 0.2 lambertian 0.2 0.2 0.8
