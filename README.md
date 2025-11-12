@@ -52,6 +52,10 @@ ffmpeg -framerate 24 -i frame_%04d.png -c:v libx264 -pix_fmt yuv420p -crf 18 out
 
 We used this exact command to produce [`animate.mp4`](samples/animate.mp4), which showcases the default moving-sphere shot. Adjust the `-crf` value (lower = higher quality) or `-framerate` to taste.
 
+
+https://github.com/user-attachments/assets/e7d49f96-e716-4906-aefa-21ac7fde4fed
+
+
 ## Scene Authoring Notes
 - Scene files live under `samples/` and are parsed by `ViewParser.scala`.
 - Supported directives include background color, camera parameters, recursion depth, samples-per-pixel, and `sphere` definitions with Lambertian, Metal (with fuzz), or Dielectric materials.
