@@ -19,10 +19,10 @@ What this does:
 2. Launches `Main`, which:
    - Parses `samples/sample.txt` by default (pass a path to override, e.g. `sbt "runMain Main samples/scene2.txt"`).
    - Renders a 16:9 frame with stochastic sampling, respecting the camera/material settings described in the text file.
-   - Saves the result as `scene.png` beside the scene description.
+   - Saves the result as `samples/sample.png` beside the scene description (try `samples/alt_sample.txt` for a different setup).
    - Opens a ScalaFX window so you can inspect the render without hunting for the PNG on disk.
 
-![Sample render](samples/scene.png)
+![Sample render](samples/sample.png)
 
 ## Generating Animation Frames
 The `Animate` entry point renders a scripted shot with a moving metallic sphere and writes every sampled frame to the `frames/` directory.
@@ -50,7 +50,7 @@ Once the frames exist, stitch them into a video with FFmpeg:
 ffmpeg -framerate 24 -i frame_%04d.png -c:v libx264 -pix_fmt yuv420p -crf 18 output.mp4
 ```
 
-We used this exact command to produce [`animate.mp4`](animate.mp4), which showcases the default moving-sphere shot. Adjust the `-crf` value (lower = higher quality) or `-framerate` to taste.
+We used this exact command to produce [`animate.mp4`](samples/animate.mp4), which showcases the default moving-sphere shot. Adjust the `-crf` value (lower = higher quality) or `-framerate` to taste.
 
 ## Scene Authoring Notes
 - Scene files live under `samples/` and are parsed by `ViewParser.scala`.
